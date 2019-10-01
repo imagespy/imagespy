@@ -5,6 +5,7 @@ IMAGE = imagespy/imagespy
 build:
 	go build -o imagespy -mod=vendor core/cmd/main.go
 
+.PHONY: package
 package:
 	docker build -t $(IMAGE):$(VERSION) .
 
