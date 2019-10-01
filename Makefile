@@ -1,5 +1,5 @@
 VERSION ?= master
-IMAGE = quay.io/imagespy/imagespy
+IMAGE = imagespy/imagespy
 
 .PHONY: build
 build:

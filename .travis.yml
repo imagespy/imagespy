@@ -11,7 +11,7 @@ script:
   - make build || travis_terminate 1
 
 before_deploy:
-  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin quay.io
+  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
 
 deploy:
   - provider: script
