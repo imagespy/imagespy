@@ -13,6 +13,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	r, err := core.NewRunnerFromConfig(*configPath)
 	if err != nil {
 		log.Fatal(err)
