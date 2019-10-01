@@ -1,0 +1,25 @@
+language: go
+go:
+  - "1.13"
+
+dist: xenial
+
+services:
+  - docker
+
+script:
+  - make build || travis_terminate 1
+
+before_deploy:
+  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin quay.io
+
+deploy:
+  - provider: script
+    script: make release
+    on:
+      branch: master
+
+  - provider: script
+    script: VERSION=$TRAVIS_TAG make release
+    on:
+      tags: true
