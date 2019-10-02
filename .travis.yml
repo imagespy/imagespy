@@ -8,6 +8,8 @@ services:
   - docker
 
 script:
+  - make bootstrap_test || travis_terminate 1
+  - make test || travis_terminate 1
   - make build || travis_terminate 1
 
 before_deploy:

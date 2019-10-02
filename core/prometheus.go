@@ -47,7 +47,7 @@ func NewCollector(f *Finder) *Collector {
 		f: f,
 		image: prom.NewDesc(
 			prom.BuildFQName(namespace, "", "image_status"),
-			"Update status of an image.",
+			"Update status of an image (0=no-update, 1=needs-update).",
 			[]string{"input", "source", "repository", "current_tag", "latest_tag", "current_digest", "latest_digest"},
 			nil,
 		),
