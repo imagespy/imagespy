@@ -7,26 +7,31 @@ import (
 	"time"
 )
 
+// Discoverer is implemented by a struct that is capable of discovering Docker images.
 type Discoverer interface {
 	Discover() (*Input, error)
 }
 
+// Logger is implemented by a struct that can receive messages.
 type Logger interface {
 	Debug(args ...interface{})
 }
 
-type NoopLogger struct{}
+type noopLogger struct{}
 
-func (n *NoopLogger) Debug(args ...interface{}) {}
+func (n *noopLogger) Debug(args ...interface{}) {}
 
+// Discovery uses a Discoverer to find Docker images.
 type Discovery struct {
 	log Logger
 }
 
+// Log sets the Logger to use.
 func (d *Discovery) Log(l Logger) {
 	d.log = l
 }
 
+// Run executes the given Discoverer on an interval and writes the result to the given file.
 func (d *Discovery) Run(dv Discoverer, interval time.Duration, path string) error {
 	d.log.Debug("starting initial discovery run")
 	err := d.run(dv, path)
@@ -68,14 +73,17 @@ func (d *Discovery) run(dv Discoverer, path string) error {
 	return nil
 }
 
+// DefaultDiscovery is an instance of Discovery with a no-op logger.
 var DefaultDiscovery = &Discovery{
-	log: &NoopLogger{},
+	log: &noopLogger{},
 }
 
+// Log sets the Logger to use by the default Discovery instance.
 func Log(l Logger) {
 	DefaultDiscovery.Log(l)
 }
 
+// Run use the default Discovery instance to execute the given Discoverer on an interval and writes the result to the given file.
 func Run(dv Discoverer, interval time.Duration, path string) error {
 	return DefaultDiscovery.Run(dv, interval, path)
 }
