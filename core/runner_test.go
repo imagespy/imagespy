@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/imagespy/imagespy/discovery"
 	"github.com/stretchr/testify/assert"
@@ -66,6 +67,7 @@ func TestRunner_Run(t *testing.T) {
 	r.cfg.DiscoveryDirectory = tmpDir
 	go func() { r.Run() }()
 	defer r.Stop()
+	time.Sleep(20 * time.Millisecond)
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
