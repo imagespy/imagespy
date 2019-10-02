@@ -48,6 +48,10 @@ func (m *Finder) Find() ([]*Result, error) {
 				log.Debugf("scraping latest image of %s", image)
 				latestImage, err := m.s.Scrape(image)
 				if err != nil {
+					if err == ErrTagNotSupported {
+						continue
+					}
+
 					return nil, fmt.Errorf("scrape latest image of %s: %w", image, err)
 				}
 
