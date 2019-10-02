@@ -1,6 +1,8 @@
 package core
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/imagespy/imagespy/core/config"
@@ -11,6 +13,7 @@ import (
 
 type Runner struct {
 	cfg config.Config
+	srv *http.Server
 }
 
 func (r *Runner) Run() error {
@@ -26,8 +29,28 @@ func (r *Runner) Run() error {
 	prom.MustRegister(pc)
 
 	http.Handle(r.cfg.PrometheusPath, promhttp.Handler())
-	log.Infof("Starting Server on %s", r.cfg.HTTPAddress)
-	return http.ListenAndServe(r.cfg.HTTPAddress, nil)
+	log.Infof("Starting HTTP Server on %s", r.cfg.HTTPAddress)
+	r.srv = &http.Server{Addr: r.cfg.HTTPAddress}
+	err = r.srv.ListenAndServe()
+	if err == http.ErrServerClosed {
+		return nil
+	}
+
+	return err
+}
+
+func (r *Runner) Stop() error {
+	if r.srv == nil {
+		return nil
+	}
+
+	log.Info("Shutting down HTTP Server")
+	err := r.srv.Shutdown(context.Background())
+	if err != nil {
+		return fmt.Errorf("shut down http server: %w", err)
+	}
+
+	return nil
 }
 
 func NewRunnerFromConfig(p string) (*Runner, error) {

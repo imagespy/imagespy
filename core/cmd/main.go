@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"os"
+	"os/signal"
 
 	log "github.com/sirupsen/logrus"
 
@@ -19,5 +21,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Fatal(r.Run())
+	go func() {
+		err := r.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	<-c
+	err = r.Stop()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
