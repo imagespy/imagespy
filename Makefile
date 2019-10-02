@@ -15,7 +15,7 @@ release: package
 
 .PHONY: test
 test:
-	go test ./...
+	go test -mod=vendor ./...
 
 .PHONY: bootstrap_test
 bootstrap_test:
