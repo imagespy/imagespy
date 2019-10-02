@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  imagespy:
+    command: -config.path /config.yaml
+    image: imagespy/imagespy:master
+    networks:
+      - imagespy
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./config.yaml:/config.yaml"
+      - "discovery:/discovery"
+
+  docker-discoverer:
+    command: -discovery.output=/discovery/docker.json
+    image: imagespy/docker-discoverer:master
+    volumes:
+      - "discovery:/discovery"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+networks:
+  imagespy:
+
+volumes:
+  discovery:

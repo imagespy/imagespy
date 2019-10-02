@@ -1,0 +1,12 @@
+cache:
+  expiration: 1m
+
+discovery:
+  directory: "/discovery"
+
+docker:
+  registries:
+    hub:
+      address: docker.io
+      auth: token
+      protocol: https
