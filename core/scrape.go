@@ -46,6 +46,10 @@ func (s *Scraper) Scrape(i *discovery.Image) (*discovery.Image, error) {
 
 	for _, t := range tags {
 		vp := versionparser.FindForVersion(t)
+		if vp.Distinction() != lastestVP.Distinction() {
+			continue
+		}
+
 		greater, err := vp.IsGreaterThan(lastestVP)
 		if err != nil {
 			if err == versionparser.ErrWrongVPType {
