@@ -8,9 +8,10 @@ import (
 )
 
 type Result struct {
-	Current *discovery.Image
-	Latest  *discovery.Image
-	Input   string
+	Current  *discovery.Image
+	Latest   *discovery.Image
+	Input    string
+	Instance string
 }
 
 type ResultCache interface {
@@ -50,9 +51,10 @@ func (m *Finder) Find() ([]*Result, error) {
 				}
 
 				r = &Result{
-					Current: image,
-					Latest:  latestImage,
-					Input:   i.Name,
+					Current:  image,
+					Latest:   latestImage,
+					Input:    i.Name,
+					Instance: i.Instance,
 				}
 				err = m.rs.Set(image, r)
 				if err != nil {

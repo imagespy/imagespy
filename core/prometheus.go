@@ -36,7 +36,7 @@ func (c *Collector) Collect(ch chan<- prom.Metric) {
 
 		currentDigest := r.Current.Digest[7:15]
 		latestDigest := r.Latest.Digest[7:15]
-		ch <- prom.MustNewConstMetric(c.image, prom.GaugeValue, result, r.Input, r.Current.Source, r.Current.Repository, r.Current.Tag, r.Latest.Tag, currentDigest, latestDigest)
+		ch <- prom.MustNewConstMetric(c.image, prom.GaugeValue, result, r.Input, r.Instance, r.Current.Source, r.Current.Repository, r.Current.Tag, r.Latest.Tag, currentDigest, latestDigest)
 	}
 
 	ch <- prom.MustNewConstMetric(c.up, prom.GaugeValue, 1)
@@ -48,7 +48,7 @@ func NewCollector(f *Finder) *Collector {
 		image: prom.NewDesc(
 			prom.BuildFQName(namespace, "", "image_status"),
 			"Update status of an image (0=no-update, 1=needs-update).",
-			[]string{"input", "source", "repository", "current_tag", "latest_tag", "current_digest", "latest_digest"},
+			[]string{"input", "instance", "source", "repository", "current_tag", "latest_tag", "current_digest", "latest_digest"},
 			nil,
 		),
 		up: prom.NewDesc(

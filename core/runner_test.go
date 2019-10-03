@@ -42,7 +42,7 @@ func TestRunner_Run(t *testing.T) {
 			},
 			expectedMetrics: []string{
 				"imagespy_up 1",
-				`imagespy_image_status{current_digest="55f250f8",current_tag="4.0.14-alpine",input="test",latest_digest="e1cd649a",latest_tag="5.0.6-alpine",repository="127.0.0.1:52854/redis",source="ttt"} 1`,
+				`imagespy_image_status{current_digest="55f250f8",current_tag="4.0.14-alpine",input="test",instance="testserver",latest_digest="e1cd649a",latest_tag="5.0.6-alpine",repository="127.0.0.1:52854/redis",source="ttt"} 1`,
 			},
 		},
 		{
@@ -56,7 +56,7 @@ func TestRunner_Run(t *testing.T) {
 			},
 			expectedMetrics: []string{
 				"imagespy_up 1",
-				`imagespy_image_status{current_digest="e1cd649a",current_tag="5.0.6-alpine",input="test",latest_digest="e1cd649a",latest_tag="5.0.6-alpine",repository="127.0.0.1:52854/redis",source="ttt"} 0`,
+				`imagespy_image_status{current_digest="e1cd649a",current_tag="5.0.6-alpine",input="test",instance="testserver",latest_digest="e1cd649a",latest_tag="5.0.6-alpine",repository="127.0.0.1:52854/redis",source="ttt"} 0`,
 			},
 		},
 	}
