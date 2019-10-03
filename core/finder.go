@@ -33,12 +33,6 @@ func (m *Finder) Find() ([]*Result, error) {
 	results := []*Result{}
 	for _, i := range inputs {
 		for _, image := range i.Images {
-			valid, err := isValidImage(image)
-			if !valid {
-				log.Warnf("validation of image from input %s failed: %v", i.Name, err)
-				continue
-			}
-
 			r, err := m.rs.Get(image)
 			if err != nil {
 				return nil, fmt.Errorf("read result of image %s from cache: %w", image, err)

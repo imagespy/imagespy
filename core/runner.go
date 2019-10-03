@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/imagespy/imagespy/core/config"
 	prom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -28,9 +29,12 @@ func (r *Runner) Run() error {
 	pc := NewCollector(finder)
 	prom.MustRegister(pc)
 
-	http.Handle(r.cfg.PrometheusPath, promhttp.Handler())
+	router := mux.NewRouter()
+	router.Handle(r.cfg.PrometheusPath, promhttp.Handler())
+	discoverHandler := &discoverHandler{s: watcher}
+	router.HandleFunc("/discover", discoverHandler.discover).Methods("POST")
+	r.srv = &http.Server{Addr: r.cfg.HTTPAddress, Handler: router}
 	log.Infof("Starting HTTP Server on %s", r.cfg.HTTPAddress)
-	r.srv = &http.Server{Addr: r.cfg.HTTPAddress}
 	err = r.srv.ListenAndServe()
 	if err == http.ErrServerClosed {
 		return nil

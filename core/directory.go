@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/imagespy/imagespy/discovery"
 	log "github.com/sirupsen/logrus"
@@ -36,6 +38,21 @@ func readAll(d string) ([]*discovery.Input, error) {
 	}
 
 	return result, nil
+}
+
+func (d *Directory) Write(in *discovery.Input) error {
+	b, err := json.Marshal(in)
+	if err != nil {
+		return fmt.Errorf("marshal JSON to write to file: %w", err)
+	}
+
+	filename := path.Join(d.d, fmt.Sprintf("%s-%s.json", strings.ToLower(in.Name), strings.ToLower(in.Instance)))
+	err = ioutil.WriteFile(filename, b, 0644)
+	if err != nil {
+		return fmt.Errorf("write to file '%s': %w", filename, err)
+	}
+
+	return nil
 }
 
 func readJSON(p string) (*discovery.Input, error) {

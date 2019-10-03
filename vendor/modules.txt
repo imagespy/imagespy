@@ -16,6 +16,8 @@ github.com/docker/libtrust
 github.com/fsnotify/fsnotify
 # github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
+# github.com/gorilla/mux v1.7.3
+github.com/gorilla/mux
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/ast

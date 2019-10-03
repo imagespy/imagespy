@@ -1,11 +1,11 @@
 package core
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
-	"path"
 	"regexp"
 	"strings"
 	"testing"
@@ -34,7 +34,8 @@ func TestRunner_Run(t *testing.T) {
 		{
 			name: "When a newer version of an image is available it exports the status of the image as needs-update",
 			discovery: &discovery.Input{
-				Name: "test",
+				Instance: "testserver",
+				Name:     "test",
 				Images: []*discovery.Image{
 					{Digest: "sha256:55f250f8bc296f15478819abd7439a70c08f9864ad2fde20be55a39341e58c93", Repository: "127.0.0.1:52854/redis", Source: "ttt", Tag: "4.0.14-alpine"},
 				},
@@ -47,7 +48,8 @@ func TestRunner_Run(t *testing.T) {
 		{
 			name: "When the image is the latest version it exports the status of the image as no-update",
 			discovery: &discovery.Input{
-				Name: "test",
+				Instance: "testserver",
+				Name:     "test",
 				Images: []*discovery.Image{
 					{Digest: "sha256:e1cd649ac85b0b170d70ce695644999419764621de5208f0fb00283aef0fdc2f", Repository: "127.0.0.1:52854/redis", Source: "ttt", Tag: "5.0.6-alpine"},
 				},
@@ -72,7 +74,9 @@ func TestRunner_Run(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			disc, _ := json.Marshal(tc.discovery)
-			ioutil.WriteFile(path.Join(tmpDir, "test.json"), disc, 0644)
+			discResp, err := http.Post("http://127.0.0.1:8567/discover", "application/json", bytes.NewBuffer(disc))
+			require.NoError(t, err, "http send discover")
+			require.Equal(t, http.StatusCreated, discResp.StatusCode)
 
 			resp, err := http.Get("http://127.0.0.1:8567/metrics")
 			require.NoError(t, err, "http get metrics")
