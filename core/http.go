@@ -22,7 +22,7 @@ type discoverHandler struct {
 func (d *discoverHandler) discover(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Warnf("read discover payload: %w", err)
+		log.Warnf("read discover payload: %s", err)
 		writeError(w, http.StatusBadRequest, errors.New("unable to read payload"))
 		return
 	}
@@ -31,7 +31,7 @@ func (d *discoverHandler) discover(w http.ResponseWriter, r *http.Request) {
 	in := &discovery.Input{}
 	err = json.Unmarshal(b, in)
 	if err != nil {
-		log.Warnf("unmarshal discover payload: %w", err)
+		log.Warnf("unmarshal discover payload: %s", err)
 		writeError(w, http.StatusBadRequest, errors.New("unable to decode payload into JSON"))
 		return
 	}
@@ -48,7 +48,7 @@ func (d *discoverHandler) discover(w http.ResponseWriter, r *http.Request) {
 
 	err = d.s.Write(in)
 	if err != nil {
-		log.Errorf("write discover payload: %w", err)
+		log.Errorf("write discover payload: %s", err)
 		writeError(w, http.StatusInternalServerError, errors.New("unable to write payload to storage"))
 		return
 	}
