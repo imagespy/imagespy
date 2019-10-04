@@ -18,4 +18,9 @@ http:
 
 prometheus:
   path: /metrics
+
+ui:
+  enabled: true
+  staticPath: ui/static
+  templatePath: ui/template.html.mustache
 `

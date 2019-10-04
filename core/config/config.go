@@ -25,6 +25,9 @@ type Config struct {
 	HTTPAddress        string
 	LogLevel           log.Level
 	PrometheusPath     string
+	UIEnabled          bool
+	UIStaticPath       string
+	UITemplatePath     string
 }
 
 func Parse(path string) (cfg Config, _ error) {
@@ -71,5 +74,8 @@ func Parse(path string) (cfg Config, _ error) {
 		HTTPAddress:        viper.GetString("http.address"),
 		LogLevel:           logLvl,
 		PrometheusPath:     viper.GetString("prometheus.path"),
+		UIEnabled:          viper.GetBool("ui.enabled"),
+		UIStaticPath:       viper.GetString("ui.staticPath"),
+		UITemplatePath:     viper.GetString("ui.templatePath"),
 	}, nil
 }
