@@ -67,6 +67,7 @@ func TestRunner_Run(t *testing.T) {
 	r, err := NewRunnerFromConfig("fixtures/TestRunner_Run/config.yaml")
 	require.NoError(t, err, "create runner from config")
 	r.cfg.DiscoveryDirectory = tmpDir
+	r.cfg.UIEnabled = false
 	go func() { r.Run() }()
 	defer r.Stop()
 	time.Sleep(20 * time.Millisecond)
