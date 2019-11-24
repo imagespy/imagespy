@@ -36,7 +36,7 @@ func (d *Exporter) Collect(ch chan<- prometheus.Metric) {
 			needsUpdate = 1
 		}
 
-		ch <- prometheus.MustNewConstMetric(d.container, prometheus.GaugeValue, needsUpdate, r.Container.Name, r.Container.Image.Tag, r.Latest.Tag)
+		ch <- prometheus.MustNewConstMetric(d.container, prometheus.GaugeValue, needsUpdate, r.Container.Name, r.Container.Image.Repository, r.Container.Image.Tag, r.Latest.Tag)
 	}
 
 	ch <- prometheus.MustNewConstMetric(d.up, prometheus.GaugeValue, 1)
@@ -48,7 +48,7 @@ func NewExporter(f *Finder) *Exporter {
 		container: prometheus.NewDesc(
 			prometheus.BuildFQName("imagespy", "", "container"),
 			"Indicates that the image of the container needs an update (0=no update, 1=update).",
-			[]string{"name", "current_tag", "latest_tag"},
+			[]string{"name", "image", "current_tag", "latest_tag"},
 			nil,
 		),
 		up: prometheus.NewDesc(
