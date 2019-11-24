@@ -22,7 +22,7 @@ func (g *GoCache) Get(i *discovery.Image) (*Result, error) {
 	}
 
 	log.Debugf("getting result cache for %s and hash %s", i, hash)
-	r, found := g.cache.Get(hash)
+	r, found := g.cache.Get(ha, sh)
 	if !found {
 		return nil, nil
 	}
