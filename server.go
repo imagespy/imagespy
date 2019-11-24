@@ -22,8 +22,18 @@ func (s *Server) Start() error {
 	sc := NewScraper([]Registry{s.cfg.Registry})
 	ex := NewExporter(NewFinder(s.Discoverer, sc))
 	prometheus.MustRegister(ex)
-	http.Handle(s.cfg.MetricsPath, promhttp.Handler())
-	return http.ListenAndServe(s.cfg.Addr, nil)
+	metricsPath := s.cfg.MetricsPath
+	if metricsPath == "" {
+		metricsPath = "/metrics"
+	}
+
+	http.Handle(metricsPath, promhttp.Handler())
+	addr := s.cfg.Addr
+	if addr == "" {
+		addr = ":8080"
+	}
+
+	return http.ListenAndServe(addr, nil)
 }
 
 func NewServer(cfg Config, d Discoverer) *Server {
