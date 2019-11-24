@@ -4,24 +4,5 @@ go:
 
 dist: xenial
 
-services:
-  - docker
-
 script:
-  - make bootstrap_test || travis_terminate 1
   - make test || travis_terminate 1
-  - make build || travis_terminate 1
-
-before_deploy:
-  - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-
-deploy:
-  - provider: script
-    script: make release
-    on:
-      branch: master
-
-  - provider: script
-    script: VERSION=$TRAVIS_TAG make release
-    on:
-      tags: true
