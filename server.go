@@ -16,7 +16,7 @@ type Server struct {
 func (s *Server) Start() error {
 	sc := NewScraper(s.cfg.Registries)
 	ex := NewExporter(NewFinder(s.Discoverer, sc))
-	prometheus.MustRegister(ex)
+	prometheus.MustRegister(ex, metricFinderErrorsTotal)
 	metricsPath := s.cfg.MetricsPath
 	if metricsPath == "" {
 		metricsPath = "/metrics"

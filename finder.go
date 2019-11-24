@@ -3,6 +3,17 @@ package discovery
 import (
 	"errors"
 	"fmt"
+
+	"github.com/prometheus/client_golang/prometheus"
+)
+
+var (
+	metricFinderErrorsTotal = prometheus.NewCounter(prometheus.CounterOpts{
+		Namespace: "imagepy",
+		Subsystem: "finder",
+		Name:      "errors_total",
+		Help:      "Number of total errors of the Finder.",
+	})
 )
 
 type FinderResult struct {
@@ -36,7 +47,9 @@ func (m *Finder) Find() ([]*FinderResult, error) {
 				continue
 			}
 
-			return nil, fmt.Errorf("scrape latest image of %s: %w", c.Image, err)
+			log.Errorf("scrape latest image of %s: %w", c.Image, err)
+			metricFinderErrorsTotal.Inc()
+			continue
 		}
 
 		results = append(results, &FinderResult{
