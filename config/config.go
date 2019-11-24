@@ -39,11 +39,11 @@ func (r *registryList) Set(v string) error {
 		Protocol: parsed.Scheme,
 	}
 	username := parsed.User.Username()
-	password, isSet := parsed.User.Password()
+	password, _ := parsed.User.Password()
 	if username == "" {
 		registry.Auth = NoAuth
 	} else {
-		if username == "token" && !isSet {
+		if username == "token" && password == "" {
 			registry.Auth = TokenAuth
 		} else {
 			registry.Auth = BasicAuth
