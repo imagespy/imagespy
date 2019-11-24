@@ -7,15 +7,8 @@ import (
 	"strings"
 
 	"github.com/imagespy/api/versionparser"
+	"github.com/imagespy/imagespy/config"
 	"github.com/imagespy/registry-client"
-)
-
-type AuthMethod int
-
-const (
-	NoAuth AuthMethod = iota + 1
-	BasicAuth
-	TokenAuth
 )
 
 var (
@@ -23,21 +16,9 @@ var (
 	ErrUnknownRegistry = errors.New("registry unknown")
 )
 
-type Registry struct {
-	Address       string
-	Auth          AuthMethod
-	BasicPassword string
-	BasicUsername string
-	Protocol      string
-}
-
-func (r *Registry) String() string {
-	return r.Address
-}
-
 type Scraper struct {
 	client     *http.Client
-	registries []Registry
+	registries []config.Registry
 }
 
 func (s *Scraper) Scrape(i Image) (li Image, err error) {
@@ -102,9 +83,9 @@ func (s *Scraper) findRegforRepo(repo string) (*registry.Registry, error) {
 		if strings.HasPrefix(repo, r.Address) {
 			var auth registry.Authenticator
 			switch r.Auth {
-			case BasicAuth:
+			case config.BasicAuth:
 				auth = registry.NewBasicAuthenticator(r.BasicUsername, r.BasicPassword)
-			case TokenAuth:
+			case config.TokenAuth:
 				auth = registry.NewTokenAuthenticator()
 			default:
 				auth = registry.NewNullAuthenticator()
@@ -127,7 +108,7 @@ func isUnknownVersion(vp versionparser.VersionParser) bool {
 	return is
 }
 
-func NewScraper(r []Registry) *Scraper {
+func NewScraper(r []config.Registry) *Scraper {
 	return &Scraper{
 		client:     registry.DefaultClient(),
 		registries: r,

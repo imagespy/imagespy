@@ -3,23 +3,18 @@ package discovery
 import (
 	"net/http"
 
+	"github.com/imagespy/imagespy/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-type Config struct {
-	Addr        string
-	MetricsPath string
-	Registry    Registry
-}
-
 type Server struct {
-	cfg        Config
+	cfg        config.Config
 	Discoverer Discoverer
 }
 
 func (s *Server) Start() error {
-	sc := NewScraper([]Registry{s.cfg.Registry})
+	sc := NewScraper(s.cfg.Registries)
 	ex := NewExporter(NewFinder(s.Discoverer, sc))
 	prometheus.MustRegister(ex)
 	metricsPath := s.cfg.MetricsPath
@@ -36,7 +31,7 @@ func (s *Server) Start() error {
 	return http.ListenAndServe(addr, nil)
 }
 
-func NewServer(cfg Config, d Discoverer) *Server {
+func NewServer(cfg config.Config, d Discoverer) *Server {
 	return &Server{
 		cfg:        cfg,
 		Discoverer: d,
